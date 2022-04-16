@@ -107,6 +107,33 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    }
+}
+
+AUTHOR_ID_VALIDATION_REGEX = r'Author\d+'
+BOOK_ID_VALIDATION_REGEX = r'Book\d+'
+CATEGORY_ID_VALIDATION_REGEX = r'Category\d+'
+NAME_VALIDATION_REGEX = r'[A-Za-z]{2,25}( [A-Za-z]{2,25})?'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
