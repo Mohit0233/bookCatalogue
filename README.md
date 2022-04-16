@@ -51,7 +51,7 @@ Starting development server at http://127.0.0.1:8000/
 
 ## Api Call Mapping
 
-```http request
+```
 http://127.0.0.1:8000/book/addBookToCatalog
 http://127.0.0.1:8000/book/addCategory
 http://127.0.0.1:8000/book/getListOfCategories
