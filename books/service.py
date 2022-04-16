@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union, Tuple
 
 from django.db.models import Q
 from rest_framework.response import Response as RestResponse
@@ -21,11 +21,18 @@ def get_category(category_id: str) -> Optional[Category]:
         return None
 
 
-def add_book_to_catalog(**kwargs: dict) -> Book:
+def add_book_to_catalog(**kwargs: dict) -> tuple[Book, bool]:
+
+    book_object = get_book(str(kwargs.get('bookId')))
+    if book_object:
+        return book_object, False
+
+    # checks for valid author
     author_object = get_author(str(kwargs.get('authorId')))
     if not author_object:
         raise ValueError("Author not found")
 
+    # checks for category author
     category_object = get_category(str(kwargs.get('categoryId')))
     if not category_object:
         raise ValueError("Category not found")
@@ -42,13 +49,16 @@ def add_book_to_catalog(**kwargs: dict) -> Book:
     )
 
     book_object.save()
-    return book_object
+    return book_object, True
 
 
-def add_category(**kwargs: dict) -> Category:
+def get_or_add_category(**kwargs: dict) -> tuple[Category, bool]:
+    category_object = Category.objects.get(kwargs.get('categoryId'))
+    if category_object:
+        return category_object, False
     category_object = Category(kwargs.get('categoryId'), kwargs.get('categoryName'))
     category_object.save()
-    return category_object
+    return category_object, True
 
 
 def get_list_of_categories() -> list[str]:
@@ -71,7 +81,7 @@ def get_most_books_sold_by_category(category_id: str) -> Optional[Book]:
 
 def search_book(partial_title: str = None, partial_author_name: str = None) -> list[Book]:
     book_object_list = Book.objects.filter(
-        Q(title__contains=partial_title) | Q(author__author_id__contains=partial_author_name))
+        Q(title__contains=partial_title) | Q(author__name__contains=partial_author_name))
     return book_object_list
 
 
@@ -80,18 +90,19 @@ def get_books_by_author(author_id: str) -> list[str]:
             Book.objects.filter(author__author_id=author_id).values('book_id')]
 
 
-def get_or_add_book(**kwargs: dict) -> RestResponse:
-    book_object = get_book(str(kwargs.get('bookId')))
-    if book_object:
-        return RestResponse("Book is already Present", 200)
+def get_or_add_book(**kwargs: dict) -> tuple[str, int]:
+
     try:
-        book_object = add_book_to_catalog(**kwargs)
+        book_object, is_created = add_book_to_catalog(**kwargs)
 
         if book_object:
-            return RestResponse("Success", 200)
+            if is_created:
+                return "Success", 200
+            else:
+                return "Book is already Present", 200
         else:
-            return RestResponse("Failed to add book to catalog", 400)
+            return "Failed to add book to catalog", 400
 
     except ValueError as e:
 
-        return RestResponse(str(e), 400)
+        return str(e), 400

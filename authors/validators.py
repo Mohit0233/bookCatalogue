@@ -2,6 +2,10 @@ from django.conf import settings
 
 from authors.utility import regex_match_pattern
 
+"""
+    custom serializer validation functions    
+"""
+
 
 def validate_author_id(value):
     regex_match_pattern(settings.AUTHOR_ID_VALIDATION_REGEX, value)
