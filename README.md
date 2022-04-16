@@ -45,3 +45,20 @@ Starting development server at http://127.0.0.1:8000/
 ## Postman Collection
 [PostmanCollection: bookCatalogue.postman_collection.json](bookCatalogue.postman_collection.json)
 
+
+[How to impot Postman Collection?](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman)
+
+
+## Api Call Mapping
+
+```http request
+http://127.0.0.1:8000/book/addBookToCatalog
+http://127.0.0.1:8000/book/addCategory
+http://127.0.0.1:8000/book/getListOfCategories
+http://127.0.0.1:8000/book/getMostBooksSoldByAuthor?authorId=Author1
+http://127.0.0.1:8000/book/getMostBooksSoldByCategory?categoryId=Category1
+http://127.0.0.1:8000/book/searchBook?partialTitle=Green&partialAuthorName=Author2
+http://127.0.0.1:8000/book/getBooksByAuthor?authorId=Author1
+http://127.0.0.1:8000/author/addAnAuthor
+http://127.0.0.1:8000/author/getAllAuthorName
+```
